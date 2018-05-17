@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import ToDoListContract from '../build/contracts/ToDoList.json'
+import TodoListContract from '../build/contracts/TodoList.json'
 import getWeb3 from './utils/getWeb3'
+import { DisplayTodos, CreateTodo } from './Components'
 
 import './css/oswald.css'
 import './css/open-sans.css'
@@ -12,30 +13,34 @@ class App extends Component {
     super(props)
 
     this.state = {
-      storageValue: 0,
-      web3: null
+      web3: null,
+      account: '0x0000000000000',
+      todoListInstance: {},
+      todos: []
     }
   }
 
-  componentDidMount() {
+  async componentDidMount() {
     // Get network provider and web3 instance.
     // See utils/getWeb3 for more info.
-
-    getWeb3
-    .then(results => {
-      this.setState({
-        web3: results.web3
-      })
-
-      // Instantiate contract once web3 provided.
-      this.instantiateContract()
-    })
-    .catch(() => {
-      console.log('Error finding web3.')
-    })
+    try {
+      const { web3 } = await getWeb3
+      // put web3 object on state and then instantiate the smart contract
+      this.setState({ web3 }, () => this.getAccountAndContractData(web3))
+    } catch (err) {
+      console.log(err.message)
+    }
   }
 
-  instantiateContract() {
+  async getAccountAndContractData(web3) {
+    // web3.eth.getAccounts() returns an array with the 0th element being the account currently signed in to metamask
+    // instantiate contract gets our smart contract from the blockchain
+    const [[ account ], todoListInstance ] = await Promise.all([ web3.eth.getAccounts(), this.instantiateContract() ])
+    const todos = await this.getTodos(todoListInstance)
+    this.setState({ todos, account, todoListInstance })
+  }
+
+  async instantiateContract() {
     /*
      * SMART CONTRACT EXAMPLE
      *
@@ -44,61 +49,48 @@ class App extends Component {
      */
 
     const contract = require('truffle-contract')
-    const toDoList = contract(ToDoListContract)
-    toDoList.setProvider(this.state.web3.currentProvider)
+    // turns our smart contract JSON blob into a javascript object
+    const todoList = contract(TodoListContract)
+    // set the provider of the contract instance to be whatever blockchain node we're connected to
+    todoList.setProvider(this.state.web3.currentProvider)
 
-    // Declaring this for later so we can chain functions on SimpleStorage.
-    var toDoListInstance
+    // find our deployed instance of smart contract
+    const todoListInstance = await todoList.deployed()
+    return todoListInstance
+  }
 
-    // Get accounts.
-    this.state.web3.eth.getAccounts((error, accounts) => {
-      toDoList.deployed().then(async (instance) => {
-        toDoListInstance = instance
-        console.log(toDoListInstance)
-        console.log(this.state.web3)
-        const totalNumToDos = await toDoListInstance.getTotalNumToDos.call();
-        console.log(totalNumToDos.toString(10))
-        let toDos = [];
-        for (let i = 0; i < totalNumToDos; i++) {
-          const toDo = await toDoListInstance.returnToDo.call(i)
-          toDos.push(toDo);
-         }
-        await Promise.all(toDos);
-        console.log(toDos)
-        // await toDoListInstance.createToDo('test task', {from: accounts[0]})
-      //   // Stores a given value, 5 by default.
-      //   return simpleStorageInstance.set(5, {from: accounts[0]})
-      // }).then((result) => {
-      //   // Get the value from the contract to prove it worked.
-      //   return simpleStorageInstance.get.call(accounts[0])
-      // }).then((result) => {
-      //   // Update state with the result.
-      //   return this.setState({ storageValue: result.c[0] })
-      })
-    })
+  async getTodos(todoListInstance){
+    // we invoke solidity view functions with .call as to not sign and submit a transaction (making this call "free")
+    const numTodos = await todoListInstance.getTotalNumTodos.call()
+    let todos = []
+    //loop through the total number of todos and call smart contract func to return single todo
+    for (let i = 0; i < numTodos; i++) {
+      const todo = await todoListInstance.returnTodo.call(i)
+      todos.push(todo)
+    }
+    return todos
   }
 
   render() {
+    const { todoListInstance, account, todos } = this.state
     return (
       <div className="App">
         <nav className="navbar pure-menu pure-menu-horizontal">
-            <a href="#" className="pure-menu-heading pure-menu-link">Truffle Box</a>
+            <a href="#" className="pure-menu-heading pure-menu-link">My Todo List!</a>
         </nav>
 
         <main className="container">
           <div className="pure-g">
             <div className="pure-u-1-1">
-              <h1>Good to Go!</h1>
-              <p>Your Truffle Box is installed and ready.</p>
-              <h2>Smart Contract Example</h2>
-              <p>If your contracts compiled and migrated successfully, below will show a stored value of 5 (by default).</p>
-              <p>Try changing the value stored on <strong>line 59</strong> of App.js.</p>
-              <p>The stored value is: {this.state.storageValue}</p>
+              <h1>My todos!</h1>
+              <p>Coming directly from my smart contract</p>
+              <DisplayTodos todos={todos} />
+              <CreateTodo account={account} contract={todoListInstance} />
             </div>
           </div>
         </main>
       </div>
-    );
+    )
   }
 }
 

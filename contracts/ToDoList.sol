@@ -1,15 +1,15 @@
 pragma solidity ^0.4.18;
 
-contract ToDoList {
+contract TodoList {
 
     /*--------------------- EVENTS ---------------------*/
 
-    event CreatedToDo(uint toDoId, string task);
-    event CompletedToDo(uint toDoId);
+    event CreatedTodo(uint toDoId, string task);
+    event CompletedTodo(uint toDoId);
 
     /*-------------------- DATA TYPES --------------------*/
 
-    struct ToDo {
+    struct Todo {
         string task;
         bool complete;
     }
@@ -20,12 +20,12 @@ contract ToDoList {
     address owner;
 
     // stores all our todos
-    ToDo[] toDos;
+    Todo[] todos;
 
     /*-------------- CONTRACT INSTATIATION --------------*/
 
     // a function with the same name as the contract is treated as the "constructor"
-    function ToDoList() public {
+    function TodoList() public {
         owner = msg.sender;
     }
 
@@ -38,35 +38,35 @@ contract ToDoList {
 
     /*--------------------- CREATION ---------------------*/
 
-    function createToDo(string task) onlyOwner public {
+    function createTodo(string task) onlyOwner public {
         // create a todo and push it into the storage array
-        uint id = toDos.push(ToDo(task, false)) - 1;
+        uint id = todos.push(Todo(task, false)) - 1;
         // fire the todo creation event
-        CreatedToDo(id, task);
+        CreatedTodo(id, task);
     }
 
     /*-------------------- COMPLETION --------------------*/
 
-    function completeToDo(uint id) onlyOwner public {
+    function completeTodo(uint id) onlyOwner public {
         // access the todo in storage
-        ToDo storage toDo = toDos[id];
+        Todo storage todo = todos[id];
         // mark the todo as complete
-        toDo.complete = true;
+        todo.complete = true;
         // fire the complete to do event
-        CompletedToDo(id);
+        CompletedTodo(id);
     }
 
     /*--------------------- QUERYING ---------------------*/
 
     // on the front end, we can initially call this func to get the total number of todos
     // then create a for loop, loop from (i = 0 => totalToDos) and call returnToDo (seen below)
-    function getTotalNumToDos() public view returns (uint){
-        return toDos.length;
+    function getTotalNumTodos() public view returns (uint){
+        return todos.length;
     }
 
-    function returnToDo(uint toDoId) public view returns (string task, bool completed) {
-        ToDo storage toDo = toDos[toDoId];
-        task = toDo.task;
-        completed = toDo.complete;
+    function returnTodo(uint todoId) public view returns (string task, bool completed) {
+        Todo storage todo = todos[todoId];
+        task = todo.task;
+        completed = todo.complete;
     }
 }
