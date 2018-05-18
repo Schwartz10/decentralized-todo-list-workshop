@@ -4,8 +4,8 @@ contract TodoList {
 
     /*--------------------- EVENTS ---------------------*/
 
-    event CreatedTodo(uint toDoId, string task);
-    event CompletedTodo(uint toDoId);
+    event CreatedTodo(uint todoId, string task);
+    event CompletedTodo(uint todoId);
 
     /*-------------------- DATA TYPES --------------------*/
 

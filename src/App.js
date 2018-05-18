@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import TodoListContract from '../build/contracts/TodoList.json'
 import getWeb3 from './utils/getWeb3'
-import { DisplayTodos, CreateTodo } from './Components'
+import { DisplayTodos, CreateTodoBtn } from './Components'
 
 import './css/oswald.css'
 import './css/open-sans.css'
@@ -18,6 +18,9 @@ class App extends Component {
       todoListInstance: {},
       todos: []
     }
+    // set these event listeners to null until we register them with events from our smart contract
+    this.createTodoEvent = null
+    this.completeTodoEvent = null
   }
 
   async componentDidMount() {
@@ -29,6 +32,13 @@ class App extends Component {
       this.setState({ web3 }, () => this.getAccountAndContractData(web3))
     } catch (err) {
       console.log(err.message)
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState){
+    // if we recently updated our state with the contract, register the smart contract event listeners
+    if (this.state.todoListInstance.abi && !prevState.todoListInstance.abi) {
+      this.registerListeners()
     }
   }
 
@@ -71,6 +81,45 @@ class App extends Component {
     return todos
   }
 
+  async registerListeners(){
+    // register event listeners
+
+    // listen for create to do events from contract
+    const { CreatedTodo, CompletedTodo } = this.state.todoListInstance
+    this.createTodoEvent = await CreatedTodo()
+    this.createTodoEvent.watch((error, results) => {
+      if (error) alert(error)
+      else {
+        const { task } = results.args
+        const updatedTodos = [...this.state.todos, [task, false]]
+        this.setState({ todos: updatedTodos })
+      }
+    })
+
+    // listen for complete to do events from contract
+    this.completeTodoEvent = await CompletedTodo()
+    this.completeTodoEvent.watch((error, results) => {
+      if (error) alert(error)
+      else {
+        const { todoId } = results.args;
+        const updatedTodos = this.state.todos.map((todo, idx) => {
+          // we compare the todoId with its position in our todo array
+          // then update the correct todo to be completed on the front end
+          return Number(todoId.toString(10)) === idx ?
+           [todo[0], true] : todo
+        })
+
+        this.setState({ todos: updatedTodos })
+      }
+    })
+  }
+
+  componentWillUnmount(){
+    // stop watching events to avoid memory leaks
+    this.createTodoEvent.stopWatching()
+    this.completeTodoEvent.stopWatching()
+  }
+
   render() {
     const { todoListInstance, account, todos } = this.state
     return (
@@ -84,8 +133,8 @@ class App extends Component {
             <div className="pure-u-1-1">
               <h1>My todos!</h1>
               <p>Coming directly from my smart contract</p>
-              <DisplayTodos todos={todos} />
-              <CreateTodo account={account} contract={todoListInstance} />
+              <DisplayTodos account={account} completeTodo={todoListInstance.completeTodo} todos={todos} />
+              <CreateTodoBtn account={account} contract={todoListInstance} />
             </div>
           </div>
         </main>

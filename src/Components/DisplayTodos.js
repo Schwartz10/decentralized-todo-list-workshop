@@ -1,7 +1,8 @@
 import React from 'react'
 import { Table, thead, tr, th, tbody, td, Jumbotron } from 'react-bootstrap'
+import CompleteTodoBtn from './CompleteTodoBtn'
 
-const DisplayTodos = ({ todos }) => (
+const DisplayTodos = ({ todos, completeTodo, account }) => (
   <div>
     {todos && todos.length > 0 ?
       <Table responsive>
@@ -19,6 +20,7 @@ const DisplayTodos = ({ todos }) => (
                 <td>{id}</td>
                 <td>{task}</td>
                 <td>{completed.toString()}</td>
+                <td><CompleteTodoBtn completeTodo={() => completeTodo(id, {from: account})} /></td>
               </tr>
             ))
           }

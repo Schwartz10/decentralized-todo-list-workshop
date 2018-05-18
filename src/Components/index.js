@@ -1,4 +1,4 @@
 import DisplayTodos from './DisplayTodos'
-import CreateTodo from './CreateTodoBtn'
+import CreateTodoBtn from './CreateTodoBtn'
 
-export { DisplayTodos, CreateTodo }
+export { DisplayTodos, CreateTodoBtn }

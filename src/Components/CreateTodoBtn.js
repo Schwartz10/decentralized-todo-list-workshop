@@ -16,12 +16,12 @@ export default class CreateToDoBtn extends Component {
   async handleCreateTodo(){
     const { taskName } = this.state
     const { contract, account } = this.props
-    console.log(taskName, contract, account)
-    const todo = await contract.createTodo(taskName, {from: account})
-    console.log(todo)
+    await contract.createTodo(taskName, {from: account})
+    this.setState({ taskName: '' })
   }
 
   render(){
+    const { taskName } = this.state
     return (
       <div className="col-md-6">
         <FormGroup>
@@ -29,7 +29,7 @@ export default class CreateToDoBtn extends Component {
             <InputGroup.Button>
               <Button onClick={this.handleCreateTodo.bind(this)} bsStyle="info">Create To Do</Button>
             </InputGroup.Button>
-            <FormControl onChange={this.handleInputChange.bind(this)} type="text" />
+            <FormControl value={taskName} onChange={this.handleInputChange.bind(this)} type="text" />
           </InputGroup>
         </FormGroup>
       </div>
