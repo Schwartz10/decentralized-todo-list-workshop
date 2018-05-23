@@ -23,7 +23,7 @@ class App extends Component {
   }
 
   render() {
-    const { todoListInstance, account, todos } = this.state
+    const { account, todos, createTodoSmartContractFunc, completeTodoSmartContractFunc } = this.state
     return (
       <div className="App">
         <nav className="navbar pure-menu pure-menu-horizontal">
@@ -35,8 +35,8 @@ class App extends Component {
             <div className="pure-u-1-1">
               <h1>My todos!</h1>
               <p>Coming directly from my smart contract</p>
-              <DisplayTodos account={account} completeTodo={todoListInstance.completeTodo} todos={todos} />
-              <CreateTodoBtn account={account} contract={todoListInstance} />
+              <DisplayTodos account={account} completeTodo={completeTodoSmartContractFunc} todos={todos} />
+              <CreateTodoBtn account={account} contract={createTodoSmartContractFunc} />
             </div>
           </div>
         </main>
