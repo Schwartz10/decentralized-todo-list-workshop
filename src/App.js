@@ -36,7 +36,7 @@ class App extends Component {
               <h1>My todos!</h1>
               <p>Coming directly from my smart contract</p>
               <DisplayTodos account={account} completeTodo={completeTodoSmartContractFunc} todos={todos} />
-              <CreateTodoBtn account={account} contract={createTodoSmartContractFunc} />
+              <CreateTodoBtn account={account} createTodo={createTodoSmartContractFunc} />
             </div>
           </div>
         </main>
