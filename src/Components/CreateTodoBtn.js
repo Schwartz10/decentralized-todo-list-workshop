@@ -16,8 +16,11 @@ export default class CreateToDoBtn extends Component {
   async handleCreateTodo(){
     const { taskName } = this.state
     const { createTodo } = this.props
-
-    /* CREATE THE TODO HERE */
+    window.web3.eth.getAccounts(async (err, accounts) => {
+      if (err) throw new Error(err);
+      await createTodo(taskName, { from: accounts[0] });
+      this.setState({ taskName: '' });
+    })
   }
 
   render(){

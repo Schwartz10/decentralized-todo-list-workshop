@@ -25,12 +25,13 @@ class App extends Component {
       GET TODOS
     */
 
-    await this.instantiateContract()
+    await this.instantiateContract();
   }
 
-  async instantiateContract(web3){
+  async instantiateContract(){
+    const contract = require('truffle-contract');
     // turns our smart contract JSON blob into a javascript object
-    const todoList = Contract(TodoListContract);
+    const todoList = contract(TodoListContract);
     // set the provider of the contract instance to be whatever blockchain node we're connected to
     todoList.setProvider(window.web3.currentProvider);
     // find our deployed instance of smart contract
@@ -40,8 +41,7 @@ class App extends Component {
   }
 
   render() {
-    const { todos } = this.state;
-    console.log(this.state)
+    const { todos, todoListInstance: { createTodo } } = this.state;
     return (
       <div className="App">
         <nav className="navbar pure-menu pure-menu-horizontal">
@@ -58,7 +58,7 @@ class App extends Component {
                 todos={todos}
               />
               <CreateTodoBtn
-                createTodo={null /* createTodoSmartContractFunc goes here */}
+                createTodo={createTodo}
               />
             </div>
           </div>
