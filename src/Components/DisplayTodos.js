@@ -20,8 +20,8 @@ const DisplayTodos = ({ todos, completeTodo }) => (
                 <td>{id}</td>
                 {/* YOU HAVE TO FILL THIS PART OUT
                   <td>{STRING - TODO}</td>
-                  <td>{CONFIRMATION STATUS}</td>
-                  <td><CompleteTodoBtn completeTodo={invoke completeTodo method} /></td>
+                  <td>{COMPLETION STATUS}</td>
+                  <td><button onClick={invoke completeTodo method with right arguments} /></td>
                 */}
               </tr>
             ))
