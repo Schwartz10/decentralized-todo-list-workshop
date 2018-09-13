@@ -22,6 +22,7 @@ class App extends Component {
       INSTANTIATE SMART CONTRACT,
       GET TODOS
     */
+    console.log(window.web3)
   }
 
   render() {
