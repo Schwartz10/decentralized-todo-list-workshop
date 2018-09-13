@@ -17,7 +17,8 @@ class App extends Component {
   }
 
   componentDidMount(){
-    /* GET THE WEB3 OBJECT HERE AND INSTANTIATE SMART CONTRACT */
+    /* GET THE WEB3 OBJECT HERE AND INSTANTIATE SMART */
+    console.log(window.web3)
   }
 
   render() {
