@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { DisplayTodos, CreateTodoBtn } from './Components'
+import Contract from 'truffle-contract';
+import TodoListContract from '../build/contracts/TodoList.json'
 
 import './css/oswald.css'
 import './css/open-sans.css'
@@ -16,17 +18,30 @@ class App extends Component {
     }
   }
 
-  componentDidMount(){
+  async componentDidMount(){
     /*
       GET THE WEB3 OBJECT HERE,
       INSTANTIATE SMART CONTRACT,
       GET TODOS
     */
-    console.log(window.web3)
+
+    await this.instantiateContract()
+  }
+
+  async instantiateContract(web3){
+    // turns our smart contract JSON blob into a javascript object
+    const todoList = Contract(TodoListContract);
+    // set the provider of the contract instance to be whatever blockchain node we're connected to
+    todoList.setProvider(window.web3.currentProvider);
+    // find our deployed instance of smart contract
+    const todoListInstance = await todoList.deployed();
+    // set our state with the todoListInstance
+    this.setState({ todoListInstance });
   }
 
   render() {
-    const { todos } = this.state
+    const { todos } = this.state;
+    console.log(this.state)
     return (
       <div className="App">
         <nav className="navbar pure-menu pure-menu-horizontal">

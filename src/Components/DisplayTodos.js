@@ -1,6 +1,5 @@
 import React from 'react'
 import { Table, thead, tr, th, tbody, td, Jumbotron } from 'react-bootstrap'
-import CompleteTodoBtn from './CompleteTodoBtn'
 
 const DisplayTodos = ({ todos, completeTodo }) => (
   <div>
