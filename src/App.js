@@ -26,6 +26,7 @@ class App extends Component {
     */
 
     await this.instantiateContract();
+    await this.getTodos();
   }
 
   async instantiateContract(){
@@ -40,8 +41,20 @@ class App extends Component {
     this.setState({ todoListInstance });
   }
 
+  async getTodos() {
+    const totalNumberOfTodos = await this.state.todoListInstance.getTotalNumTodos.call();
+    const pendingTodosPromiseArray = [];
+    for (let i = 0; i < totalNumberOfTodos; i++) {
+      pendingTodosPromiseArray.push(this.state.todoListInstance.returnTodo.call(i));
+    }
+
+    const todos = await Promise.all(pendingTodosPromiseArray);
+    this.setState({ todos });
+  }
+
   render() {
     const { todos, todoListInstance: { createTodo } } = this.state;
+    console.log(todos)
     return (
       <div className="App">
         <nav className="navbar pure-menu pure-menu-horizontal">
