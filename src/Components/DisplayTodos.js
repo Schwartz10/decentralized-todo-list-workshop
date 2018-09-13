@@ -2,7 +2,7 @@ import React from 'react'
 import { Table, thead, tr, th, tbody, td, Jumbotron } from 'react-bootstrap'
 import CompleteTodoBtn from './CompleteTodoBtn'
 
-const DisplayTodos = ({ todos, completeTodo, account }) => (
+const DisplayTodos = ({ todos, completeTodo }) => (
   <div>
     {todos && todos.length > 0 ?
       <Table responsive>
@@ -15,12 +15,14 @@ const DisplayTodos = ({ todos, completeTodo, account }) => (
         </thead>
         <tbody>
           {
-            todos.map(([task, completed], id) => (
+            todos.map((todo, id) => (
               <tr key={id}>
                 <td>{id}</td>
-                <td>{task}</td>
-                <td>{completed.toString()}</td>
-                <td><CompleteTodoBtn completeTodo={() => completeTodo(id, {from: account})} /></td>
+                {/* YOU HAVE TO FILL THIS PART OUT
+                  <td>{STRING - TODO}</td>
+                  <td>{CONFIRMATION STATUS}</td>
+                  <td><CompleteTodoBtn completeTodo={invoke completeTodo method} /></td>
+                */}
               </tr>
             ))
           }

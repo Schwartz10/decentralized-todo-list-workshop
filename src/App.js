@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import TodoListContract from '../build/contracts/TodoList.json'
-import getWeb3 from './utils/getWeb3'
 import { DisplayTodos, CreateTodoBtn } from './Components'
 
 import './css/oswald.css'
@@ -13,17 +11,17 @@ class App extends Component {
     super(props)
 
     this.state = {
-      web3: null,
-      account: '0x0000000000000',
       todoListInstance: {},
       todos: [],
-      createTodoSmartContractFunc: null,
-      completeTodoSmartContractFunc: null
     }
   }
 
+  componentDidMount(){
+    /* GET THE WEB3 OBJECT HERE AND INSTANTIATE SMART CONTRACT */
+  }
+
   render() {
-    const { account, todos, createTodoSmartContractFunc, completeTodoSmartContractFunc } = this.state
+    const { todos } = this.state
     return (
       <div className="App">
         <nav className="navbar pure-menu pure-menu-horizontal">
@@ -35,8 +33,13 @@ class App extends Component {
             <div className="pure-u-1-1">
               <h1>My todos!</h1>
               <p>Coming directly from my smart contract</p>
-              <DisplayTodos account={account} completeTodo={completeTodoSmartContractFunc} todos={todos} />
-              <CreateTodoBtn account={account} createTodo={createTodoSmartContractFunc} />
+              <DisplayTodos
+                completeTodo={null /* completeTodoSmartContractFunc goes here */}
+                todos={todos}
+              />
+              <CreateTodoBtn
+                createTodo={null /* createTodoSmartContractFunc goes here */}
+              />
             </div>
           </div>
         </main>

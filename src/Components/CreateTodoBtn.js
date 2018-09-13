@@ -15,9 +15,9 @@ export default class CreateToDoBtn extends Component {
 
   async handleCreateTodo(){
     const { taskName } = this.state
-    const { createTodo, account } = this.props
-    await createTodo(taskName, {from: account})
-    this.setState({ taskName: '' })
+    const { createTodo } = this.props
+
+    /* CREATE THE TODO HERE */
   }
 
   render(){

@@ -2,11 +2,6 @@ pragma solidity ^0.4.18;
 
 contract TodoList {
 
-    /*--------------------- EVENTS ---------------------*/
-
-    event CreatedTodo(uint todoId, string task);
-    event CompletedTodo(uint todoId);
-
     /*-------------------- DATA TYPES --------------------*/
 
     struct Todo {
@@ -16,29 +11,12 @@ contract TodoList {
 
     /*--------------------- STORAGE ---------------------*/
 
-    // keeps track of the contract owner
-    address owner;
-
     // stores all our todos
     Todo[] todos;
 
-    /*-------------- CONTRACT INSTATIATION --------------*/
-
-    // a function with the same name as the contract is treated as the "constructor"
-    function TodoList() public {
-        owner = msg.sender;
-    }
-
-    /*-------------------- MODIFIERS --------------------*/
-
-    modifier onlyOwner {
-        require(msg.sender == owner);
-        _;
-    }
-
     /*--------------------- CREATION ---------------------*/
 
-    function createTodo(string task) onlyOwner public {
+    function createTodo(string task) public {
         // create a todo and push it into the storage array
         uint id = todos.push(Todo(task, false)) - 1;
         // fire the todo creation event
@@ -47,13 +25,11 @@ contract TodoList {
 
     /*-------------------- COMPLETION --------------------*/
 
-    function completeTodo(uint id) onlyOwner public {
+    function completeTodo(uint id) public {
         // access the todo in storage
         Todo storage todo = todos[id];
         // mark the todo as complete
         todo.complete = true;
-        // fire the complete to do event
-        CompletedTodo(id);
     }
 
     /*--------------------- QUERYING ---------------------*/
