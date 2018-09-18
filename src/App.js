@@ -16,6 +16,8 @@ class App extends Component {
       todoListInstance: {},
       todos: [],
     }
+
+    this.completeTodo = this.completeTodo.bind(this);
   }
 
   async componentDidMount(){
@@ -52,6 +54,13 @@ class App extends Component {
     this.setState({ todos });
   }
 
+  completeTodo(idx) {
+    const { completeTodo } = this.state.todoListInstance;
+    window.web3.eth.getAccounts((err, [account]) => {
+      completeTodo(idx, { from: account });
+    });
+  }
+
   render() {
     const { todos, todoListInstance: { createTodo } } = this.state;
     console.log(todos)
@@ -67,7 +76,7 @@ class App extends Component {
               <h1>My todos!</h1>
               <p>Coming directly from my smart contract</p>
               <DisplayTodos
-                completeTodo={null /* completeTodoSmartContractFunc goes here */}
+                completeTodo={this.completeTodo}
                 todos={todos}
               />
               <CreateTodoBtn

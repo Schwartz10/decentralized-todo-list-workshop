@@ -14,14 +14,12 @@ const DisplayTodos = ({ todos, completeTodo }) => (
         </thead>
         <tbody>
           {
-            todos.map((todo, id) => (
+            todos.map(([task, completionStatus], id) => (
               <tr key={id}>
                 <td>{id}</td>
-                {/* YOU HAVE TO FILL THIS PART OUT
-                  <td>{STRING - TODO}</td>
-                  <td>{COMPLETION STATUS}</td>
-                  <td><button onClick={invoke completeTodo method with right arguments} /></td>
-                */}
+                  <td>{task}</td>
+                  <td>{completionStatus.toString()}</td>
+                  <td><button onClick={() => completeTodo(id)} /></td>
               </tr>
             ))
           }
